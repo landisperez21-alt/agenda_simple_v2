@@ -29,23 +29,23 @@ Sigue estos pasos para clonar y ejecutar el proyecto en tu entorno local:
    git clone [https://github.com/landisperez21-alt/agenda_simple_v2.git](https://github.com/landisperez21-alt/agenda_simple_v2.git)
 Crea y activa un entorno virtual:
 
-Bash
+
 python -m venv venv
 # En Windows:
 venv\Scripts\activate
 Instala las dependencias:
 
-Bash
+
 pip install -r requirements.txt
 Realiza las migraciones de la base de datos:
 
-Bash
+
 python manage.py migrate
 Inicia el servidor de desarrollo:
 
-Bash
+
 python manage.py runserver
 Abre tu navegador e ingresa a: http://127.0.0.1:8000/
 
-💻 Autor y Desarrollador
+# Autor y Desarrollador:
 Proyecto creado, diseñado y desarrollado por Landi (landisperez21-alt), como parte de la implementación de sistemas web modernos y arquitectura con Django. ✨
