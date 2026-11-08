@@ -1,0 +1,50 @@
+{% extends 'control/base.html' %}
+
+{% block content %}
+<section class="tarjeta" style="text-align: center;">
+    <h2>✨ Bienvenido a Mi Agenda</h2>
+    <p style="color: var(--text-main); margin-bottom: 25px;">Hola, {{ user.username }}. Desde aquí puedes gestionar tus clientes y sus citas de forma ordenada.</p>
+</section>
+
+<!-- 1. Sección Clientes -->
+<section class="tarjeta">
+    <h2>Clientes</h2>
+    <p>Total registrados: <strong>{{ total_clientes|default:0 }}</strong></p>
+    <a href="{% url 'clientes' %}" class="boton guardar">Gestionar Clientes ➔</a>
+</section>
+
+<!-- 2. Lista de clientes independiente -->
+<section class="tarjeta">
+    <h2>Lista de clientes</h2>
+    <p>Visualiza y administra el directorio completo de clientes registrados en el sistema.</p>
+    <a href="{% url 'clientes' %}" class="boton limpiar">Ver Lista de Clientes</a>
+</section>
+
+<!-- 3. Sección Citas -->
+<section class="tarjeta">
+    <h2>Citas</h2>
+    <p>Total programadas: <strong>{{ total_citas|default:0 }}</strong></p>
+    <a href="{% url 'citas' %}" class="boton guardar">Gestionar Citas ➔</a>
+</section>
+
+<!-- 4. Lista de citas independiente -->
+<section class="tarjeta">
+    <h2>Lista de citas</h2>
+    <p>Revisa el calendario y el estado de todas las citas agendadas.</p>
+    <a href="{% url 'citas' %}" class="boton limpiar">Ver Lista de Citas</a>
+</section>
+
+<!-- 5. Botón Cerrar sesión independiente al final -->
+{% if user.is_authenticated %}
+<section class="tarjeta" style="text-align: center; background-color: var(--header-bg);">
+    <h3 style="color: var(--text-heading); margin-top: 0;">Sesión Activa</h3>
+    <p style="margin-bottom: 20px;">¿Deseas salir de la plataforma de forma segura?</p>
+    <form method="post" action="{% url 'logout' %}" style="display: inline-block; margin: 0;">
+        {% csrf_token %}
+        <button type="submit" class="boton eliminar" style="padding: 12px 25px; font-size: 15px; font-weight: bold;">
+            Cerrar sesión 🚪
+        </button>
+    </form>
+</section>
+{% endif %}
+{% endblock %}

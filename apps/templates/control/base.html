@@ -1,0 +1,310 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi Agenda Simple V2</title>
+    <link rel="icon" type="image/png" href="{% static 'control/img/gatito.png' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #FCF1F5;
+            --card-bg: #FFFFFF;
+            --text-main: #5A454C;
+            --text-heading: #795262;
+            --header-bg: #F0DDE5;
+            --border-color: #FBE9F3;
+            --btn-guardar: #F2D3E6;
+            --btn-limpiar: #FBEBF9;
+            --btn-editar: #F0DDE5;
+            --btn-eliminar: #FCDADE;
+            --input-bg: #FFFFFF;
+            --th-bg: #F0DDE5;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #241A1E;
+            --card-bg: #2E2226;
+            --text-main: #F0DDE5;
+            --text-heading: #F9E0EA;
+            --header-bg: #382A30;
+            --border-color: #4A3A40;
+            --btn-guardar: #4A3A40;
+            --btn-limpiar: #3A2E34;
+            --btn-editar: #45353D;
+            --btn-eliminar: #5C3A42;
+            --input-bg: #1F1518;
+            --th-bg: #382A30;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        header {
+            background-color: var(--header-bg);
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 15px;
+            transition: background-color 0.3s;
+        }
+
+        header h1 {
+            color: var(--text-heading);
+            margin: 0;
+            font-size: 1.4rem;
+        }
+
+        .header-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .theme-toggle {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+        }
+
+        main {
+            flex: 1;
+            max-width: 1100px;
+            width: 100%;
+            margin: 30px auto;
+            padding: 0 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .tarjeta {
+            background: var(--card-bg);
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 18px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        h2 {
+            color: var(--text-heading);
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: var(--text-heading);
+            font-size: 14px;
+        }
+
+        input, select, textarea {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 12px;
+            font: inherit;
+            background: var(--input-bg);
+            color: var(--text-main);
+            margin-bottom: 15px;
+            transition: all 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--text-heading);
+            box-shadow: 0 0 8px rgba(249, 224, 234, 0.4);
+        }
+
+        .botones {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        button, .boton {
+            display: inline-block;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 18px;
+            cursor: pointer;
+            font: inherit;
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 500;
+            transition: filter 0.2s ease, transform 0.1s ease;
+        }
+
+        .guardar { background: var(--btn-guardar); color: var(--text-heading); font-weight: 700; }
+        .limpiar { background: var(--btn-limpiar); color: var(--text-heading); }
+        .editar { background: var(--btn-editar); color: var(--text-heading); padding: 6px 12px; font-size: 13px; }
+        .eliminar { background: var(--btn-eliminar); color: #B85C74; padding: 6px 12px; font-size: 13px; }
+        .buscar-btn { background: var(--btn-guardar); color: var(--text-heading); }
+
+        button:hover, .boton:hover {
+            filter: brightness(0.95);
+            transform: translateY(-1px);
+        }
+
+        .buscar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .buscar input {
+            flex: 1;
+            min-width: 180px;
+            margin-bottom: 0;
+        }
+
+        .tabla-contenedor {
+            overflow-x: auto;
+            margin-top: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        th {
+            background: var(--th-bg);
+            color: var(--text-heading);
+            font-weight: 600;
+        }
+
+        .acciones {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .form-eliminar {
+            margin: 0;
+        }
+
+        footer {
+            text-align: center;
+            background-color: var(--header-bg);
+            color: var(--text-heading);
+            border-top: 1px solid var(--border-color);
+            transition: background-color 0.3s;
+            margin-top: auto;
+        }
+
+        .redes, .copyright {
+            padding: 12px;
+        }
+
+        .redes {
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        .redes a {
+            color: var(--text-heading);
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .redes a:hover {
+            text-decoration: underline;
+        }
+
+        .copyright {
+            font-size: 13px;
+        }
+
+        @media (max-width: 650px) {
+            .tarjeta { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1>hola /</h1>
+        </div>
+        <div class="header-info">
+            <span style="font-size: 13px; opacity: 0.8;">Mi Agenda Simple V2</span>
+            <span style="font-size: 13px; opacity: 0.8;">Django 6 + MariaDB 11.8</span>
+            <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">✨ Modo claro</button>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <div class="redes">
+            Hecho con Django + MariaDB &nbsp;|&nbsp; 
+            <a href="#">Facebook</a> &middot; 
+            <a href="#">Instagram</a> &middot; 
+            <a href="#">YouTube</a>
+        </div>
+        <div class="copyright">
+            © 2026 Agenda Simple - Proyecto Educativo &nbsp;|&nbsp; Un comienzo, muchas posibilidades. ✨
+        </div>
+    </footer>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const btn = document.getElementById('themeBtn');
+            if (html.getAttribute('data-theme') === 'dark') {
+                html.removeAttribute('data-theme');
+                btn.textContent = '✨ Modo claro';
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                btn.textContent = '🌙 Modo oscuro';
+            }
+        }
+    </script>
+</body>
+</html>

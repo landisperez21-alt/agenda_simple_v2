@@ -1,0 +1,95 @@
+{% extends 'control/base.html' %}
+{% block content %}
+<div style="display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 900px; margin: 0 auto; gap: 20px;">
+
+    <div style="width: 100%; text-align: left;">
+        <a href="{% url 'inicio' %}" class="boton limpiar" style="font-size: 14px;">⬅ Volver al inicio</a>
+    </div>
+
+    <!-- Muestra el formulario si NO es modo lista -->
+    {% if not request.GET.modo == 'lista' and not request.GET.ver_lista %}
+    <section class="tarjeta" style="width: 100%;">
+        <h2>{% if editar %}Editar cita{% else %}Registrar cita{% endif %}</h2>
+        <form method="post" action="{% url 'guardar_cita' %}">
+            {% csrf_token %}
+            {% if editar %}<input type="hidden" name="id_cita" value="{{ editar.id }}">{% endif %}
+            
+            <label>Cliente</label>
+            <select name="cliente" required>
+                <option value="">Seleccione un cliente</option>
+                {% for cliente in lista_clientes %}
+                <option value="{{ cliente.id }}" {% if editar.cliente.id == cliente.id %}selected{% endif %}>{{ cliente.nombre }} {{ cliente.apellido }}</option>
+                {% endfor %}
+            </select>
+
+            <label>Asunto</label>
+            <input type="text" name="asunto" value="{{ editar.asunto|default:'' }}" required>
+
+            <label>Fecha</label>
+            <input type="date" name="fecha" value="{{ editar.fecha|date:'Y-m-d'|default:'' }}" required>
+
+            <label>Hora</label>
+            <input type="time" name="hora" value="{{ editar.hora|default:'' }}" required>
+            
+            <div class="botones">
+                <button type="submit" class="guardar">{% if editar %}Actualizar Cita{% else %}Guardar Cita{% endif %}</button>
+                <a href="{% url 'citas' %}" class="boton limpiar">Limpiar</a>
+            </div>
+        </form>
+    </section>
+    {% endif %}
+
+    <!-- Muestra únicamente la tabla si ES modo lista -->
+    {% if request.GET.modo == 'lista' or request.GET.ver_lista %}
+    <section class="tarjeta" style="width: 100%;">
+        <h2>Lista de citas</h2>
+        <form method="get" class="buscar" style="margin-bottom: 20px;">
+            <input type="hidden" name="modo" value="lista">
+            <input type="search" name="buscar" value="{{ buscar }}" placeholder="Buscar cliente o asunto">
+            <button type="submit" class="buscar-btn">Buscar</button>
+            <a href="{% url 'citas' %}?modo=lista" class="boton limpiar">Ver todas</a>
+        </form>
+        
+        <div class="tabla-contenedor">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Asunto</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cita in citas %}
+                    <tr>
+                        <td>{{ cita.id }}</td>
+                        <td>{{ cita.cliente.nombre }} {{ cita.cliente.apellido }}</td>
+                        <td>{{ cita.asunto }}</td>
+                        <td>{{ cita.fecha|date:'d/m/Y' }}</td>
+                        <td>{{ cita.hora }}</td>
+                        <td>
+                            <div class="acciones">
+                                <a href="{% url 'citas' %}?editar={{ cita.id }}" class="boton editar">Editar</a>
+                                <form method="post" class="form-eliminar" action="{% url 'eliminar_cita' cita.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="eliminar">Eliminar</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 20px;">No hay citas registradas.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+    {% endif %}
+
+</div>
+{% endblock %}

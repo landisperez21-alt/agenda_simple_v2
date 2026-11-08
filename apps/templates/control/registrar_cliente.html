@@ -1,0 +1,40 @@
+{% extends 'control/base.html' %}
+{% block content %}
+<div style="display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 600px; margin: 0 auto; gap: 20px;">
+
+    <!-- Volver al Inicio -->
+    <div style="width: 100%; text-align: left;">
+        <a href="{% url 'inicio' %}" class="boton limpiar" style="font-size: 14px;">⬅ Volver al inicio</a>
+    </div>
+
+    <!-- Formulario Registrar / Editar -->
+    <section class="tarjeta" style="width: 100%;">
+        <h2>{% if editar %}Editar cliente{% else %}Registrar cliente{% endif %}</h2>
+        <form method="post" action="{% url 'guardar_cliente' %}">
+            {% csrf_token %}
+            {% if editar %}<input type="hidden" name="id_cliente" value="{{ editar.id }}">{% endif %}
+            
+            <label>Nombre</label>
+            <input type="text" name="nombre" maxlength="100" value="{{ editar.nombre|default:'' }}" required>
+            
+            <label>Apellido</label>
+            <input type="text" name="apellido" maxlength="100" value="{{ editar.apellido|default:'' }}" required>
+            
+            <label>Correo</label>
+            <input type="email" name="correo" maxlength="150" value="{{ editar.correo|default:'' }}" required>
+            
+            <label>DNI</label>
+            <input type="text" name="dni" maxlength="8" minlength="8" pattern="[0-9]{8}" value="{{ editar.dni|default:'' }}" required>
+            
+            <label>Teléfono (opcional)</label>
+            <input type="text" name="telefono" maxlength="30" value="{{ editar.telefono|default:'' }}">
+            
+            <div class="botones">
+                <button type="submit" class="guardar">{% if editar %}Actualizar{% else %}Guardar cliente{% endif %}</button>
+                <a href="{% url 'inicio' %}" class="boton limpiar">Cancelar</a>
+            </div>
+        </form>
+    </section>
+
+</div>
+{% endblock %}

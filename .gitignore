@@ -1,0 +1,11 @@
+# Python / Django
+*.pyc
+__pycache__/
+db.sqlite3
+media/
+venv/
+env/
+.env
+
+# VS Code
+.vscode/

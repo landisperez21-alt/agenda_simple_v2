@@ -1,0 +1,45 @@
+{% extends 'control/base.html' %}
+
+{% block content %}
+<div style="display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 600px; margin: 0 auto; gap: 20px;">
+
+    <!-- Tarjeta de Bienvenida -->
+    <section class="tarjeta" style="width: 100%; text-align: center;">
+        <h2>✨ Bienvenido a Mi Agenda</h2>
+        <p style="color: var(--text-main); margin-bottom: 0;">Hola, {{ user.username }}. Desde aquí puedes gestionar tus clientes y sus citas.</p>
+    </section>
+
+    <!-- Tarjeta Clientes -->
+    <section class="tarjeta" style="width: 100%; text-align: center;">
+        <h2>👥 Clientes</h2>
+        <p style="color: var(--text-main); margin-bottom: 20px;">Accede al registro o consulta la lista completa.</p>
+        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+            <a href="{% url 'clientes' %}" class="boton guardar">Registrar Cliente ➔</a>
+            <a href="{% url 'clientes' %}?modo=lista" class="boton limpiar">Ver Lista de Clientes 📋</a>
+        </div>
+    </section>
+
+    <!-- Tarjeta Citas -->
+    <section class="tarjeta" style="width: 100%; text-align: center;">
+        <h2>📅 Citas</h2>
+        <p style="color: var(--text-main); margin-bottom: 20px;">Administra el agendamiento y consulta la lista de citas.</p>
+        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+            <a href="{% url 'citas' %}" class="boton guardar">Registrar Cita ➔</a>
+            <a href="{% url 'citas' %}?modo=lista" class="boton limpiar">Ver Lista de Citas 📅</a>
+        </div>
+    </section>
+
+    <!-- Botón de Cerrar Sesión (Limpio, sin título arriba) -->
+    {% if user.is_authenticated %}
+    <section class="tarjeta" style="width: 100%; text-align: center; background-color: var(--header-bg); padding: 20px;">
+        <form method="post" action="{% url 'logout' %}" style="margin: 0;">
+            {% csrf_token %}
+            <button type="submit" class="boton eliminar" style="padding: 12px 30px; font-size: 15px; font-weight: bold; width: 100%;">
+                Cerrar sesión 🚪
+            </button>
+        </form>
+    </section>
+    {% endif %}
+
+</div>
+{% endblock %}
